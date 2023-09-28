@@ -6,10 +6,10 @@ const port = process.env.PORT || 3000; // Use the provided port or default to 80
 app.use(express.json());
 
 const videoRoutes = require('./routes/video');
-const uploadRoutes = require('./routes/uploads');
+
 // Use the video route
 app.use('/video', videoRoutes);
-app.use('/upload', uploadRoutes);
+app.use('/upload', videoRoutes);
 
 
 // Start the server
