@@ -7,7 +7,7 @@ router.get('/video', (req, res) => {
   // You may use a templating engine like EJS, or serve a static HTML file using `res.sendFile`
   // In this example, we'll serve a simple HTML file named "video.html"
 
-  res.sendFile('video.html', { root: __dirname });
+  res.sendFile('./video.html', { root: __dirname });
 });
 
 // You can also define other routes related to video handling if needed
