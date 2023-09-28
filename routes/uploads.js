@@ -3,7 +3,6 @@ const multer = require('multer'); // For handling file uploads
 const fs = require('fs'); // For working with the file system
 const router = require('./video');
 const app = express();
-const port = process.env.PORT || 8000; // Use the provided port or default to 8000
 
 // Middleware to parse JSON requests
 app.use(express.json());
