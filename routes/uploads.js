@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer'); // For handling file uploads
 const fs = require('fs'); // For working with the file system
+const router = require('./video');
 const app = express();
 const port = process.env.PORT || 8000; // Use the provided port or default to 8000
 
@@ -12,7 +13,7 @@ const storage = multer.memoryStorage(); // Store the uploaded file in memory
 const upload = multer({ storage: storage });
 
 // Define a route for handling video uploads
-app.post('/upload', upload.single('video'), (req, res) => {
+router.post('/upload', upload.single('video'), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
@@ -36,3 +37,5 @@ app.post('/upload', upload.single('video'), (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+module.exports = router;
+
