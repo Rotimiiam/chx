@@ -23,7 +23,7 @@ app.post('/upload', upload.single('video'), (req, res) => {
 
     // You can now do whatever you want with the videoBuffer
     // For example, you can send it back to the client for them to save
-    res.setHeader('Content-Disposition', 'attachment; filename="uploaded_video.mp4"');
+    res.setHeader('Content-Disposition', 'attachment; filename="screen_rec.mp4"');
     res.setHeader('Content-Type', 'video/mp4');
     res.send(videoBuffer);
   } catch (error) {
