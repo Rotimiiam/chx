@@ -1,11 +1,7 @@
 const express = require('express');
 const multer = require('multer'); // For handling file uploads
-const fs = require('fs'); // For working with the file system
-const router = require('./video');
-const app = express();
 
-// Middleware to parse JSON requests
-app.use(express.json());
+const router = express.Router();
 
 // Middleware for handling file uploads
 const storage = multer.memoryStorage(); // Store the uploaded file in memory
@@ -31,5 +27,5 @@ router.post('/upload', upload.single('video'), (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-module.exports = router;
 
+module.exports = router;
