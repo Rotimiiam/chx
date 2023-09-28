@@ -32,10 +32,5 @@ router.post('/upload', upload.single('video'), (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 module.exports = router;
 
