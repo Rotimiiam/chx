@@ -8,8 +8,8 @@ app.use(express.json());
 const videoRoutes = require('./routes/video');
 
 // Use the video route
-app.use('/video', videoRoutes);
-app.use('/upload', videoRoutes);
+app.use('/', videoRoutes);
+app.use('/', videoRoutes);
 
 
 // Start the server
