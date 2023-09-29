@@ -58,7 +58,8 @@ router.post('/upload', upload.single('video'), (req, res) => {
   }
 });
 router.get('/video', (req, res) => {
-  res.sendFile('video.html', { root: path.join(__dirname, 'public') });
+  const filePath = path.resolve(__dirname, 'public', 'video.html');
+  res.sendFile(filePath);
 });
 
 module.exports = router;
