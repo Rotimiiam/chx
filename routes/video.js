@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const multer = require('multer'); // For handling file uploads
 const AWS = require('aws-sdk'); // AWS SDK for Node.js
+const path = require('path');
 
 const router = express.Router();
 
@@ -55,6 +56,9 @@ router.post('/upload', upload.single('video'), (req, res) => {
     console.error('Error handling video upload:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+});
+router.get('/video', (req, res) => {
+  res.sendFile('video.html', { root: path.join(__dirname, 'public') });
 });
 
 module.exports = router;
