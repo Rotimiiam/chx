@@ -50,19 +50,35 @@ router.post('/upload', upload.single('video'), (req, res) => {
 
       // Return an HTML response with the video player
       const videoHTML = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Uploaded Video</title>
-          </head>
-          <body>
-            <h2>Uploaded Video</h2>
-            <video controls width="400">
-              <source src="${s3Url}" type="video/mp4" />
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <title>Video Playback</title>
+      </head>
+      <body>
+          <h1>Video Playback</h1>
+      
+          <video id="videoPlayer" controls autoplay>
               Your browser does not support the video tag.
-            </video>
-          </body>
-        </html>
+          </video>
+      
+          <script>
+              // Get the S3 URL from the query parameter
+              const urlParams = new URLSearchParams(window.location.search);
+              const s3Url = urlParams.get('s3Url');
+      
+              if (s3Url) {
+                  // Set the video source to the S3 URL
+                  const videoPlayer = document.getElementById('videoPlayer');
+                  videoPlayer.src = s3Url;
+              } else {
+                  // Handle the case when no S3 URL is provided
+                  console.error('No S3 URL provided.');
+              }
+          </script>
+      </body>
+      </html>
+      
       `;
 
       res.send(videoHTML);
