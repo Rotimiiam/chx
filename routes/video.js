@@ -24,11 +24,16 @@ router.post('/upload', upload.single('video'), (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
+
+    const currentDate = new Date().toISOString().replace(/:/g, '-').replace('T', '_').slice(0, -5);
+    // Generate a unique file name using a timestamp and random string
+    const uniqueFileName = currentDate + '-' + 'screen_rec' + '.mp4';
+
     // Get the uploaded file as a buffer
     const videoBuffer = req.file.buffer;
 
     // Define the path to save the video file to the "uploads" folder
-    const filePath = './uploads/screen_rec.mp4';
+    const filePath = `./uploads/${uniqueFileName}`;
 
     // Write the video buffer to the file system
     fs.writeFile(filePath, videoBuffer, (err) => {
@@ -38,7 +43,7 @@ router.post('/upload', upload.single('video'), (req, res) => {
       }
 
       // Set the response headers for video playback
-      res.setHeader('Content-Disposition', 'attachment; filename="screen_rec.mp4"');
+      res.setHeader('Content-Disposition', `attachment; filename="${uniqueFileName}"`);
       res.setHeader('Content-Type', 'video/mp4');
 
       // Send the video buffer as the response
