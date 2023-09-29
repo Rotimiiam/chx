@@ -1,17 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer'); // For handling file uploads
-const fs = require('fs'); // For working with the file system
+const AWS = require('aws-sdk'); // AWS SDK for Node.js
 
 const router = express.Router();
 
-// Define a route for rendering the video playback page
-router.get('/video', (req, res) => {
-  // Here, you can render an HTML page with a video player or serve a static HTML file
-  // You may use a templating engine like EJS, or serve a static HTML file using `res.sendFile`
-  // In this example, we'll serve a simple HTML file named "video.html"
-
-  res.sendFile('video.html', { root: __dirname });
+// Initialize AWS SDK with your credentials from environment variables
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
 });
+
 
 // Middleware for handling file uploads
 const storage = multer.memoryStorage(); // Store the uploaded file in memory
@@ -24,30 +24,32 @@ router.post('/upload', upload.single('video'), (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-
-    const currentDate = new Date().toISOString().replace(/:/g, '-').replace('T', '_').slice(0, -5);
     // Generate a unique file name using a timestamp and random string
+    const currentDate = new Date().toISOString().replace(/:/g, '-').replace('T', '_').slice(0, -5);
     const uniqueFileName = currentDate + '-' + 'screen_rec' + '.mp4';
 
-    // Get the uploaded file as a buffer
+    // Get the uploaded video buffer
     const videoBuffer = req.file.buffer;
 
-    // Define the path to save the video file to the "uploads" folder
-    const filePath = `./uploads/${uniqueFileName}`;
+    // Define the parameters for uploading to AWS S3 using environment variables
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: `uploads/${uniqueFileName}`, // Specify the folder and unique file name
+      Body: videoBuffer,
+    };
 
-    // Write the video buffer to the file system
-    fs.writeFile(filePath, videoBuffer, (err) => {
+    // Upload the video to AWS S3
+    s3.upload(params, (err, data) => {
       if (err) {
-        console.error('Error saving video to disk:', err);
+        console.error('Error uploading to S3:', err);
         return res.status(500).json({ message: 'Internal server error' });
       }
 
-      // Set the response headers for video playback
-      res.setHeader('Content-Disposition', `attachment; filename="${uniqueFileName}"`);
-      res.setHeader('Content-Type', 'video/mp4');
+      // Set the S3 URL as the response
+      const s3Url = data.Location;
 
-      // Send the video buffer as the response
-      res.send(videoBuffer);
+      // Redirect to the video route with the S3 URL
+      res.redirect(`/video?s3Url=${encodeURIComponent(s3Url)}`);
     });
   } catch (error) {
     console.error('Error handling video upload:', error);
