@@ -49,7 +49,7 @@ router.post('/upload', upload.single('video'), (req, res) => {
       const s3Url = data.Location;
 
       // Redirect to the video route with the S3 URL
-      res.redirect(`/video?s3Url=${encodeURIComponent(s3Url)}`);
+      res.redirect(`/api/video?s3Url=${encodeURIComponent(s3Url)}`);
     });
   } catch (error) {
     console.error('Error handling video upload:', error);
