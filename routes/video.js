@@ -58,7 +58,7 @@ router.post('/upload', upload.single('video'), (req, res) => {
   }
 });
 router.get('/video', (req, res) => {
-  const filePath = path.resolve(__dirname, 'public', 'video.html');
+  const filePath = path.resolve(__dirname, 'video.html');
   res.sendFile(filePath);
 });
 
