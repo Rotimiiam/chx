@@ -13,7 +13,6 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
 });
 
-
 // Middleware for handling file uploads
 const storage = multer.memoryStorage(); // Store the uploaded file in memory
 const upload = multer({ storage: storage });
@@ -46,20 +45,32 @@ router.post('/upload', upload.single('video'), (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
       }
 
-      // Set the S3 URL as the response
+      // Set the S3 URL as the video URL
       const s3Url = data.Location;
 
-      // Redirect to the video route with the S3 URL
-      res.redirect(`/api/video?s3Url=${encodeURIComponent(s3Url)}`);
+      // Return an HTML response with the video player
+      const videoHTML = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Uploaded Video</title>
+          </head>
+          <body>
+            <h2>Uploaded Video</h2>
+            <video controls width="400">
+              <source src="${s3Url}" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </body>
+        </html>
+      `;
+
+      res.send(videoHTML);
     });
   } catch (error) {
     console.error('Error handling video upload:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
-router.get('/video', (req, res) => {
-  const filePath = path.resolve(__dirname, 'video.html');
-  res.sendFile(filePath);
 });
 
 module.exports = router;
